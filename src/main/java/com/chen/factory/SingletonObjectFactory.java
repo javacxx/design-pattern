@@ -12,14 +12,18 @@ import java.util.Map;
 public class SingletonObjectFactory {
     private SingletonObjectFactory(){};
 
-    private static final Map<String, Object> singletonObjects =
+    private static volatile Map<String, Object> singletonObjects =
             new HashMap<>();
 
-    public synchronized static <T> T getSingleton(Class<T> c) {
+    public static <T> T getSingleton(Class<T> c) {
         String className = c.getName();
         if (!singletonObjects.containsKey(className)) {
-            T t = createInstance(className);
-            singletonObjects.put(className, t);
+            synchronized (singletonObjects){
+                if (!singletonObjects.containsKey(className)) {
+                    T t = createInstance(className);
+                    singletonObjects.put(className, t);
+                }
+            }
         }
         return (T) singletonObjects.get(className);
     }
