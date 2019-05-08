@@ -9,9 +9,12 @@ public class Client {
     private Client() {};
 
     public static void main(String[] args) {
-        Client a = SingletonObjectFactory.getSingleton(Client.class);
-        Client b = SingletonObjectFactory.getSingleton(Client.class);
-        System.out.println(a);
-        System.out.println(b);
+        for (int i = 0; i < 100; i++) {
+            new Thread(() -> {
+                System.out.println(
+                        SingletonObjectFactory.getSingleton(Client.class)
+                );
+            }).start();
+        }
     }
 }

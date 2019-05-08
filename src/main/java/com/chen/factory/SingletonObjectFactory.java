@@ -22,8 +22,8 @@ public class SingletonObjectFactory {
             synchronized (c.getClass()){
                 if (!singletonObjectsMap.containsKey(className)) {
                     T t = createInstance(className);
-           //       singletonObjectsMap.putIfAbsent(className, t);
                     singletonObjectsMap.put(className, t);
+              //    singletonObjectsMap.putIfAbsent(className, t);
                 }
             }
         }
