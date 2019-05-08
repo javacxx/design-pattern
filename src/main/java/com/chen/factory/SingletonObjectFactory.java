@@ -3,6 +3,7 @@ package com.chen.factory;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author CXX
@@ -12,20 +13,21 @@ import java.util.Map;
 public class SingletonObjectFactory {
     private SingletonObjectFactory(){};
 
-    private static volatile Map<String, Object> singletonObjects =
-            new HashMap<>();
+    private static volatile Map<String, Object> singletonObjectsMap =
+            new ConcurrentHashMap<>();
 
     public static <T> T getSingleton(Class<T> c) {
         String className = c.getName();
-        if (!singletonObjects.containsKey(className)) {
-            synchronized (singletonObjects){
-                if (!singletonObjects.containsKey(className)) {
+        if (!singletonObjectsMap.containsKey(className)) {
+            synchronized (c.getClass()){
+                if (!singletonObjectsMap.containsKey(className)) {
                     T t = createInstance(className);
-                    singletonObjects.put(className, t);
+           //       singletonObjectsMap.putIfAbsent(className, t);
+                    singletonObjectsMap.put(className, t);
                 }
             }
         }
-        return (T) singletonObjects.get(className);
+        return (T) singletonObjectsMap.get(className);
     }
 
     private static <T> T createInstance(String className) {
